@@ -1,0 +1,252 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HILC_sim.m</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-06"><meta name="DC.source" content="HILC_sim.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>HILC_sim.m</h1><!--introduction--><p>This script is to (i) simulate an LTI system of an actuator that has probabilistic discrete choice behaviors with corresponding utility functions; (ii) see if the final state of each scenario that is documented immediately below indicates a potential statistical modeling problem. We have the following scenarios:</p><p><b>Scenario #1:</b></p><div><ul><li>constant external parameter w(t) = w_0 = 0</li><li>binomial logit model for discrete choices (0, 1)</li></ul></div><p><b>Scenario #2:</b></p><div><ul><li>w(t) = t (linear)</li><li>binomial (0, 1)</li><li>trinomial (-1, 0, 1)</li></ul></div><p><b>Scenario #3:</b></p><div><ul><li>w(t) = t^2 (quatratic)</li><li>binomial (0, 1)</li><li>trinomial (-1, 0, 1)</li></ul></div><p>(with the same set of simulation length = {100, 1000, 100000})</p><p><i>S. Bae, June, 2017</i></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Input arguments</a></li><li><a href="#2">Initialization</a></li><li><a href="#3">Simulation</a></li><li><a href="#4">Visualization</a></li></ul></div><h2 id="1">Input arguments</h2><p>Customize input arguments here</p><pre class="codeinput">scen        = 1;        <span class="comment">% scenario number</span>
+numSim      = 5000;     <span class="comment">% number of simulation</span>
+simLength   = 100;     <span class="comment">% length of each simulation</span>
+lambda      = 1;      <span class="comment">% input scaler</span>
+numAlts     = 2;        <span class="comment">% number of alternatives in the choice set</span>
+</pre><h2 id="2">Initialization</h2><pre class="codeinput"><span class="comment">% Utility functions -- no exogenous param</span>
+m1 = 1;
+m2 = 1;
+
+<span class="comment">% Probability model with the given parameters on the utility functions</span>
+prob1 = 0.5; <span class="comment">% probability of alt1 (zero)</span>
+prob2 = 0.0; <span class="comment">% probability of alt2 (1)</span>
+prob3 = 0.0; <span class="comment">% probability of alt3 (2)</span>
+
+<span class="comment">% LTI system</span>
+A = -0.1;
+B = 1;
+C = 1;
+D = 0;
+sys = ss(A,B,C,D);
+</pre><h2 id="3">Simulation</h2><pre class="codeinput">xArr = zeros(length(numSim),1);
+<span class="keyword">for</span> s = 1:numSim
+    <span class="comment">% Create time vector</span>
+    DeltaT = 1;
+    t = 0:DeltaT:simLength-1;   <span class="comment">% Total Simulation time</span>
+
+    <span class="comment">% Generate input with probability</span>
+    u = zeros(length(t),1);
+    <span class="keyword">for</span> i=1:length(u)
+        <span class="keyword">if</span>(numAlts == 2) <span class="comment">% binomial</span>
+            u(i) = lambda*sum(rand &gt;= cumsum([prob1]));
+        <span class="keyword">elseif</span>(numAlts == 3) <span class="comment">% trinomial</span>
+            u(i) = lambda*sum(rand &gt;= cumsum([prob1 prob2]));
+        <span class="keyword">elseif</span>(numAlts == 4) <span class="comment">% multinomial</span>
+            u(i) = lambda*sum(rand &gt;= cumsum([prob1 prob2 prob3]));
+        <span class="keyword">end</span>
+
+    <span class="keyword">end</span>
+
+    <span class="comment">% Initial conditions</span>
+    x0 = 100;
+
+    <span class="comment">% Simulate linear dynamics</span>
+    [~,tsim,x] = lsim(sys, u, t, x0);
+
+    <span class="comment">% Store the last state in the array</span>
+    xArr(s) = x(end);
+<span class="keyword">end</span>
+</pre><h2 id="4">Visualization</h2><pre class="codeinput">figure(<span class="string">'Visible'</span>,<span class="string">'on'</span>)
+
+<span class="comment">% Final state distribution</span>
+subplot(211);
+histogram(xArr);
+title(sprintf(<span class="string">'Distribution of the last state, alts = %d \n(A = %.1f, %s = %0.1f, simLength = %d, numSim = %d)'</span>,<span class="keyword">...</span>
+    numAlts, A, <span class="string">'\lambda'</span>, lambda,simLength, numSim), <span class="string">'fontsize'</span>, 15);
+xlabel(<span class="string">'Final state'</span>, <span class="string">'fontsize'</span>, 15);
+ylabel(<span class="string">'Frequency (# of events)'</span>, <span class="string">'fontsize'</span>, 15);
+
+<span class="comment">% State trajectory</span>
+subplot(212);
+plot(t,x);
+title(sprintf(<span class="string">'States, alts = %d \n(A = %.1f, %s = %0.1f, x0 = %.1f)'</span>, <span class="keyword">...</span>
+    numAlts, A, <span class="string">'\lambda'</span>, lambda, x0), <span class="string">'fontsize'</span>, 15);
+xlabel(<span class="string">'Time (t)'</span>, <span class="string">'fontsize'</span>, 15);
+ylabel(<span class="string">'Magnitude'</span>, <span class="string">'fontsize'</span>, 15);
+
+
+saveas(gcf,fullfile(pwd,<span class="string">'/images/'</span>,sprintf(<span class="string">'%s vis'</span>,datestr(datetime(<span class="string">'now'</span>)))),<span class="string">'epsc'</span>);
+
+disp(<span class="string">'done.'</span>);
+</pre><pre class="codeoutput">done.
+</pre><img vspace="5" hspace="5" src="HILC_sim_01.png" style="width:560px;height:420px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% HILC_sim.m
+% This script is to (i) simulate an LTI system of an actuator that has 
+% probabilistic discrete choice behaviors with corresponding utility
+% functions; (ii) see if the final state of each scenario that is
+% documented immediately below indicates a potential statistical
+% modeling problem.
+% We have the following scenarios:
+%
+% *Scenario #1:*
+%
+% * constant external parameter w(t) = w_0 = 0
+% * binomial logit model for discrete choices (0, 1)
+%
+% *Scenario #2:*
+%
+% * w(t) = t (linear)
+% * binomial (0, 1)
+% * trinomial (-1, 0, 1)
+%
+% *Scenario #3:*
+%
+% * w(t) = t^2 (quatratic)
+% * binomial (0, 1)
+% * trinomial (-1, 0, 1)
+%
+% (with the same set of simulation length = {100, 1000, 100000})
+% 
+%
+% _S. Bae, June, 2017_
+
+%% Input arguments
+% Customize input arguments here
+scen        = 1;        % scenario number
+numSim      = 5000;     % number of simulation
+simLength   = 100;     % length of each simulation
+lambda      = 1;      % input scaler
+numAlts     = 2;        % number of alternatives in the choice set
+
+%% Initialization
+
+% Utility functions REPLACE_WITH_DASH_DASH no exogenous param
+m1 = 1; 
+m2 = 1; 
+
+% Probability model with the given parameters on the utility functions
+prob1 = 0.5; % probability of alt1 (zero)
+prob2 = 0.0; % probability of alt2 (1)
+prob3 = 0.0; % probability of alt3 (2)
+
+% LTI system
+A = -0.1;
+B = 1;
+C = 1;
+D = 0;
+sys = ss(A,B,C,D);
+
+%% Simulation
+xArr = zeros(length(numSim),1);
+for s = 1:numSim
+    % Create time vector
+    DeltaT = 1;
+    t = 0:DeltaT:simLength-1;   % Total Simulation time
+
+    % Generate input with probability
+    u = zeros(length(t),1);
+    for i=1:length(u)
+        if(numAlts == 2) % binomial
+            u(i) = lambda*sum(rand >= cumsum([prob1]));
+        elseif(numAlts == 3) % trinomial
+            u(i) = lambda*sum(rand >= cumsum([prob1 prob2]));
+        elseif(numAlts == 4) % multinomial
+            u(i) = lambda*sum(rand >= cumsum([prob1 prob2 prob3]));
+        end
+        
+    end
+
+    % Initial conditions
+    x0 = 100;    
+
+    % Simulate linear dynamics
+    [~,tsim,x] = lsim(sys, u, t, x0);
+    
+    % Store the last state in the array
+    xArr(s) = x(end);
+end
+
+%% Visualization
+figure('Visible','on')
+
+% Final state distribution
+subplot(211);
+histogram(xArr);
+title(sprintf('Distribution of the last state, alts = %d \n(A = %.1f, %s = %0.1f, simLength = %d, numSim = %d)',...
+    numAlts, A, '\lambda', lambda,simLength, numSim), 'fontsize', 15);
+xlabel('Final state', 'fontsize', 15);
+ylabel('Frequency (# of events)', 'fontsize', 15);
+
+% State trajectory
+subplot(212);
+plot(t,x);
+title(sprintf('States, alts = %d \n(A = %.1f, %s = %0.1f, x0 = %.1f)', ...
+    numAlts, A, '\lambda', lambda, x0), 'fontsize', 15);
+xlabel('Time (t)', 'fontsize', 15);
+ylabel('Magnitude', 'fontsize', 15);
+
+
+saveas(gcf,fullfile(pwd,'/images/',sprintf('%s vis',datestr(datetime('now')))),'epsc');
+
+disp('done.');
+##### SOURCE END #####
+--></body></html>
